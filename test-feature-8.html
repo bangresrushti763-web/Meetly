@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Feature 8: Live Polls & Quizzes</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .controls { background: #f5f5f5; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
+        .poll-display { background: #eef; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
+        button { padding: 8px 15px; margin: 5px; border: none; border-radius: 3px; cursor: pointer; }
+        button:hover { opacity: 0.8; }
+        input, textarea { padding: 8px; margin: 5px; width: calc(100% - 20px); }
+        .host-btn { background: #4CAF50; color: white; }
+        .participant-btn { background: #2196F3; color: white; }
+        .end-btn { background: #f44336; color: white; }
+        .vote-btn { background: #FF9800; color: white; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Test Feature 8: Live Polls & Quizzes</h1>
+        
+        <div class="controls">
+            <h2>Host Controls</h2>
+            <input type="text" id="roomId" placeholder="Room ID (URL)" value="test-room-123">
+            <input type="text" id="question" placeholder="Poll Question" value="What is your favorite programming language?">
+            <textarea id="options" placeholder="Poll Options (one per line)" rows="4">JavaScript
+Python
+Java
+C++</textarea>
+            <button class="host-btn" onclick="createPoll()">Create Poll</button>
+            <button class="end-btn" onclick="endPoll()">End Poll</button>
+        </div>
+        
+        <div class="controls">
+            <h2>Participant Controls</h2>
+            <button class="participant-btn" onclick="joinRoom()">Join Room</button>
+        </div>
+        
+        <div class="poll-display">
+            <h2>Live Poll Display</h2>
+            <div id="poll-content">No active poll</div>
+        </div>
+    </div>
+
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <script>
+        const socket = io('http://localhost:8000');
+        let currentRoomId = '';
+        
+        // DOM elements
+        const roomIdInput = document.getElementById('roomId');
+        const questionInput = document.getElementById('question');
+        const optionsInput = document.getElementById('options');
+        const pollContent = document.getElementById('poll-content');
+        
+        // Join room
+        function joinRoom() {
+            const roomId = roomIdInput.value;
+            if (!roomId) {
+                alert('Please enter a room ID');
+                return;
+            }
+            
+            currentRoomId = roomId;
+            socket.emit('join-call', roomId);
+            alert(`Joined room: ${roomId}`);
+        }
+        
+        // Create poll
+        function createPoll() {
+            const roomId = roomIdInput.value;
+            const question = questionInput.value;
+            const options = optionsInput.value.split('\n').filter(opt => opt.trim());
+            
+            if (!roomId || !question || options.length < 2) {
+                alert('Please fill in all fields with at least 2 options');
+                return;
+            }
+            
+            socket.emit('createPoll', { roomId, question, options });
+        }
+        
+        // Vote in poll
+        function vote(optionIndex) {
+            socket.emit('votePoll', { roomId: currentRoomId, optionIndex });
+        }
+        
+        // End poll
+        function endPoll() {
+            const roomId = roomIdInput.value;
+            if (!roomId) {
+                alert('Please enter a room ID');
+                return;
+            }
+            
+            socket.emit('endPoll', { roomId });
+        }
+        
+        // Socket event listeners
+        socket.on('newPoll', (pollData) => {
+            displayPoll(pollData);
+        });
+        
+        socket.on('updatePoll', (pollData) => {
+            displayPoll(pollData);
+        });
+        
+        socket.on('pollEnded', () => {
+            pollContent.innerHTML = '<p>Poll has ended</p>';
+        });
+        
+        // Display poll
+        function displayPoll(poll) {
+            let html = `<h3>${poll.question}</h3><ul>`;
+            
+            poll.options.forEach((option, index) => {
+                html += `
+                    <li>
+                        <button class="vote-btn" onclick="vote(${index})">Vote</button>
+                        ${option} (${poll.votes[index]} votes)
+                    </li>
+                `;
+            });
+            
+            html += '</ul>';
+            pollContent.innerHTML = html;
+        }
+    </script>
+</body>
+</html>

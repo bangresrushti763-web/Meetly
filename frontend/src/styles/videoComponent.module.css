@@ -1,0 +1,499 @@
+.meetVideoContainer {
+    position: relative;
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    overflow: hidden;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.meetUserVideo {
+    position: absolute;
+    bottom: 100px; /* Adjusted to account for footer */
+    height: 22vh;
+    width: auto;
+    right: 20px;
+    border-radius: 12px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    z-index: 10;
+    object-fit: cover;
+}
+
+.buttonContainers {
+    width: 100%;
+    text-align: center;
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(10px);
+    padding: 15px 0;
+    z-index: 100;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.buttonContainers svg {
+    font-size: 2.2rem;
+}
+
+.conferenceView { 
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    padding: 12px;
+    width: 100%;
+    box-sizing: border-box;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.conferenceView video {
+    width: 100%;
+    height: 150px;
+    border-radius: 8px;
+    background: #000;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    object-fit: cover;
+}
+
+.chatRoom {
+    position: fixed;
+    height: calc(100vh - 120px);
+    right: 20px;
+    top: 20px;
+    background: rgba(15, 23, 42, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    width: 350px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    z-index: 50;
+    display: flex;
+    flex-direction: column;
+}
+
+.chatContainer {
+    position: relative;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.chatContainer h1 {
+    color: white;
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.chattingDisplay {
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 20px;
+    padding: 10px;
+    background: rgba(30, 41, 59, 0.5);
+    border-radius: 10px;
+}
+
+.chattingDisplay p {
+    color: #e2e8f0;
+    margin: 5px 0;
+}
+
+.chattingDisplay > div {
+    background: rgba(56, 189, 248, 0.1);
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.chattingDisplay > div p:first-child {
+    font-weight: bold;
+    color: #38bdf8;
+}
+
+.chattingArea {
+    display: flex;
+    gap: 10px;
+}
+
+.chattingArea TextField {
+    flex: 1;
+}
+
+.chattingArea Button {
+    height: 56px;
+}
+
+.meetingHeader {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(10px);
+    z-index: 100;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.meetingHeader .meetingInfo {
+    color: white;
+    display: flex;
+    flex-direction: column;
+}
+
+.meetingHeader .meetingInfo h2 {
+    font-size: 1.2rem;
+    margin: 0;
+}
+
+.meetingHeader .meetingInfo p {
+    font-size: 0.9rem;
+    opacity: 0.7;
+    margin: 0;
+}
+
+.meetingHeader .meetingActions {
+    display: flex;
+    gap: 15px;
+}
+
+.meetingParticipants {
+    position: fixed;
+    top: 80px;
+    left: 20px;
+    background: rgba(15, 23, 42, 0.7);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    padding: 15px;
+    color: white;
+    min-width: 200px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    z-index: 60;
+}
+
+.meetingParticipants h3 {
+    margin-top: 0;
+    font-size: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 10px;
+}
+
+.participantList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.participantList li {
+    padding: 8px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.participantList li::before {
+    content: "•";
+    color: #38bdf8;
+    font-size: 1.5rem;
+}
+
+.notification {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(15, 23, 42, 0.9);
+    color: white;
+    padding: 15px 30px;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.notification svg {
+    font-size: 1.5rem;
+    color: #38bdf8;
+}
+
+/* Whiteboard Styles */
+.whiteboard-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 300;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.whiteboard-container {
+    width: 80%;
+    max-width: 900px;
+    height: 70%;
+    background: rgba(15, 23, 42, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.whiteboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background: rgba(30, 41, 59, 0.7);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.whiteboard-header h2 {
+    color: white;
+    font-size: 1.3rem;
+    margin: 0;
+}
+
+.whiteboard-controls {
+    display: flex;
+    gap: 10px;
+}
+
+.whiteboard-close-btn {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: 6px;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.whiteboard-close-btn:hover {
+    background: rgba(239, 68, 68, 0.3);
+}
+
+.whiteboard-toolbar {
+    display: flex;
+    gap: 20px;
+    padding: 15px 20px;
+    background: rgba(30, 41, 59, 0.5);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    align-items: center;
+}
+
+.toolbar-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.toolbar-group label {
+    color: #cbd5e1;
+    font-size: 0.9rem;
+}
+
+.color-picker {
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.line-width-select {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    padding: 6px 10px;
+}
+
+.clear-button {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: 6px;
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.clear-button:hover {
+    background: rgba(239, 68, 68, 0.3);
+}
+
+.canvas-container {
+    flex: 1;
+    padding: 15px;
+    overflow: hidden;
+}
+
+.whiteboard-canvas {
+    width: 100%;
+    height: 100%;
+    background: white;
+    border-radius: 8px;
+    cursor: crosshair;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.whiteboard-footer {
+    padding: 10px 20px;
+    background: rgba(30, 41, 59, 0.5);
+    color: #94a3b8;
+    font-size: 0.85rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Whiteboard Toggle Button - Internal */
+.whiteboard-toggle {
+    position: fixed;
+    bottom: 100px;
+    right: 20px;
+    z-index: 90;
+}
+
+.whiteboard-toggle-button {
+    background: linear-gradient(45deg, #38bdf8, #0ea5e9);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 30px;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(56, 189, 248, 0.3);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.whiteboard-toggle-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 25px rgba(56, 189, 248, 0.5);
+}
+
+/* Whiteboard Toggle Button - External */
+.whiteboard-toggle-button-external {
+    background: linear-gradient(45deg, #38bdf8, #0ea5e9);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(56, 189, 248, 0.3);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.whiteboard-toggle-button-external:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(56, 189, 248, 0.5);
+}
+
+/* Icon-only button in control bar */
+.icon-button {
+    background: rgba(56, 189, 248, 0.2);
+    border-radius: 50%;
+    padding: 12px;
+    transition: all 0.2s ease;
+}
+
+.icon-button:hover {
+    background: rgba(56, 189, 248, 0.3);
+    transform: scale(1.1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .conferenceView {
+        grid-template-columns: 1fr;
+        padding: 10px;
+        gap: 10px;
+    }
+    
+    .conferenceView video {
+        height: 200px;
+    }
+    
+    .meetUserVideo {
+        height: 15vh;
+        width: auto;
+        bottom: 100px; /* Adjusted to account for footer */
+        right: 10px;
+    }
+    
+    .buttonContainers {
+        padding: 10px 0;
+        gap: 5px;
+    }
+    
+    .buttonContainers svg {
+        font-size: 1.8rem;
+    }
+    
+    .meetingParticipants {
+        left: 10px;
+        right: 10px;
+        width: calc(100% - 20px);
+    }
+    
+    .notification {
+        width: calc(100% - 40px);
+        font-size: 0.9rem;
+        padding: 10px 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .conferenceView {
+        padding: 5px;
+        gap: 5px;
+    }
+    
+    .conferenceView video {
+        height: 150px;
+    }
+    
+    .meetingHeader {
+        padding: 8px 10px;
+    }
+    
+    .meetingHeader .meetingInfo h2 {
+        font-size: 1rem;
+    }
+    
+    .meetingHeader .meetingInfo p {
+        font-size: 0.8rem;
+    }
+    
+    .buttonContainers svg {
+        font-size: 1.5rem;
+    }
+    
+    .meetUserVideo {
+        height: 12vh;
+        bottom: 100px; /* Adjusted to account for footer */
+    }
+}

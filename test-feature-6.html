@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Feature 6: AI Meeting Notes</title>
+</head>
+<body>
+    <h1>Test Feature 6: AI Meeting Notes (Auto Summarization)</h1>
+    <p>Testing the new /summarize endpoint</p>
+    
+    <textarea id="transcript" rows="10" cols="50" placeholder="Enter meeting transcript here...">
+        Welcome to our quarterly planning meeting. Today we'll discuss the Q3 goals and objectives. 
+        First, let's review our progress on the previous quarter's targets. 
+        We've successfully launched the new product line and exceeded our sales projections by 15%. 
+        The marketing team has done an excellent job with the campaign rollout. 
+        For Q3, our main objectives are to expand into the European market and improve our customer retention rate. 
+        The development team will focus on enhancing the mobile app user experience. 
+        We also need to address the feedback from our recent customer survey regarding the checkout process. 
+        Let's assign action items: John will lead the European market expansion research, 
+        Sarah will work on the mobile app improvements, and Mike will handle the checkout process optimization. 
+        We'll schedule follow-up meetings every two weeks to track progress.
+    </textarea>
+    <br><br>
+    
+    <button onclick="summarizeMeeting()">Summarize Meeting</button>
+    <br><br>
+    
+    <div id="result" style="border: 1px solid #ccc; padding: 10px; min-height: 100px;">
+        Summary will appear here...
+    </div>
+    
+    <script>
+        async function summarizeMeeting() {
+            const transcript = document.getElementById('transcript').value;
+            const resultDiv = document.getElementById('result');
+            
+            resultDiv.innerHTML = 'Generating summary...';
+            
+            try {
+                const response = await fetch('http://localhost:8000/api/v1/meeting-notes/summarize', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ transcript }),
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = '<h3>Meeting Summary:</h3><pre>' + data.summary + '</pre>';
+                } else {
+                    resultDiv.innerHTML = 'Error: ' + data.error;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = 'Error: ' + error.message;
+            }
+        }
+    </script>
+</body>
+</html>
