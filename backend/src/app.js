@@ -14,8 +14,20 @@ const app = express();
 const server = createServer(app);
 const io = connectToSocket(server);
 
-app.set("port", process.env.PORT || 8000)
-app.use(cors());
+// Use Render's PORT environment variable, or default to 8000
+const PORT = process.env.PORT || 8000;
+app.set("port", PORT);
+
+// Configure CORS for production
+const corsOptions = {
+  origin: process.env.NODE_ENV === 'production' 
+    ? [process.env.FRONTEND_URL || 'https://your-frontend-url.onrender.com'] 
+    : ["http://localhost:3000", "http://localhost:3001"],
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+};
+
+app.use(cors(corsOptions));
 app.use(express.json({ limit: "40kb" }));
 app.use(express.urlencoded({ limit: "40kb", extended: true }));
 
@@ -25,11 +37,23 @@ app.use("/api/v1/translate", translateRoutes);
 
 // Test route to check if server is running
 app.get("/api/v1/test", (req, res) => {
-    res.json({ message: "Server is running" });
+    res.json({ message: "Server is running", timestamp: new Date().toISOString() });
+});
+
+// Health check route for Render
+app.get("/health", (req, res) => {
+    res.status(200).json({ 
+        status: "OK", 
+        timestamp: new Date().toISOString(),
+        port: PORT,
+        nodeEnv: process.env.NODE_ENV || "development"
+    });
 });
 
 const start = async () => {
     console.log("Attempting to connect to MongoDB with URI:", process.env.MONGODB_URI?.split('?')[0]); // Hide sensitive params
+    console.log("NODE_ENV:", process.env.NODE_ENV || "development");
+    console.log("PORT:", PORT);
     
     try {
         // Enhanced connection options for better reliability in restricted environments
@@ -38,7 +62,7 @@ const start = async () => {
             socketTimeoutMS: 10000,
             connectTimeoutMS: 5000,
             family: 4, // Use IPv4, which is more reliable
-            tls: false, // Disable TLS for local connections
+            tls: process.env.NODE_ENV === 'production', // Enable TLS in production
             retryWrites: true,
             w: "majority",
             maxPoolSize: 5, // Limit connection pool size
@@ -80,8 +104,8 @@ const start = async () => {
         }
     }
     
-    server.listen(app.get("port"), () => {
-        console.log("🚀 LISTENING ON PORT", app.get("port"))
+    server.listen(PORT, () => {
+        console.log("🚀 LISTENING ON PORT", PORT)
         console.log("🔧 Server running in", process.env.NODE_ENV || "development", "mode");
         
         // Check if we're using MongoDB or fallback

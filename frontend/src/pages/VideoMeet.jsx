@@ -110,35 +110,45 @@ export default function VideoMeetComponent() {
     const getPermissions = async () => {
         console.log('getPermissions called');
         try {
-            // Reset availability flags
-            setVideoAvailable(true);
-            setAudioAvailable(true);
-            
-            if (videoAvailable) {
+            // Check if media devices are supported
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                console.log('Media devices API not supported');
+                setVideoAvailable(false);
+                setAudioAvailable(false);
+                return;
+            }
+
+            // Try to get video permission
+            if (video) {
                 console.log('Requesting video permission');
-                const videoPermission = await navigator.mediaDevices.getUserMedia({ video: true });
-                if (videoPermission) {
-                    setVideoAvailable(true);
-                    console.log('Video permission granted');
-                    // Stop the tracks immediately to avoid using the camera until needed
-                    videoPermission.getTracks().forEach(track => track.stop());
-                } else {
+                try {
+                    const videoPermission = await navigator.mediaDevices.getUserMedia({ video: true });
+                    if (videoPermission) {
+                        setVideoAvailable(true);
+                        console.log('Video permission granted');
+                        // Stop the tracks immediately to avoid using the camera until needed
+                        videoPermission.getTracks().forEach(track => track.stop());
+                    }
+                } catch (error) {
+                    console.log('Video permission denied:', error);
                     setVideoAvailable(false);
-                    console.log('Video permission denied');
                 }
             }
 
-            if (audioAvailable) {
+            // Try to get audio permission
+            if (audio) {
                 console.log('Requesting audio permission');
-                const audioPermission = await navigator.mediaDevices.getUserMedia({ audio: true });
-                if (audioPermission) {
-                    setAudioAvailable(true);
-                    console.log('Audio permission granted');
-                    // Stop the tracks immediately to avoid using the mic until needed
-                    audioPermission.getTracks().forEach(track => track.stop());
-                } else {
+                try {
+                    const audioPermission = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    if (audioPermission) {
+                        setAudioAvailable(true);
+                        console.log('Audio permission granted');
+                        // Stop the tracks immediately to avoid using the mic until needed
+                        audioPermission.getTracks().forEach(track => track.stop());
+                    }
+                } catch (error) {
+                    console.log('Audio permission denied:', error);
                     setAudioAvailable(false);
-                    console.log('Audio permission denied');
                 }
             }
 
@@ -201,12 +211,17 @@ export default function VideoMeetComponent() {
         if (localVideoref.current) {
             console.log('Setting srcObject to stream');
             localVideoref.current.srcObject = stream;
-        }
-
-        // Ensure the video element is playing
-        if (localVideoref.current) {
-            console.log('Playing video');
-            localVideoref.current.play().catch(e => console.log('Error playing video:', e));
+            
+            // Ensure the video element is playing
+            localVideoref.current.play()
+                .then(() => console.log('Video play successful'))
+                .catch(e => {
+                    console.log('Error playing video:', e);
+                    // Try to handle the play error
+                    if (e.name === 'NotAllowedError') {
+                        console.log('Play not allowed, likely due to browser autoplay policies');
+                    }
+                });
         }
 
         // Update connections with new stream
@@ -267,6 +282,12 @@ export default function VideoMeetComponent() {
 
     let getUserMedia = () => {
         console.log('getUserMedia called. Video:', video, 'Video available:', videoAvailable, 'Audio:', audio, 'Audio available:', audioAvailable);
+        
+        // Check if media devices are supported
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            console.log('Media devices API not supported');
+            return;
+        }
         
         // Improved media constraints
         const constraints = {
@@ -518,6 +539,12 @@ export default function VideoMeetComponent() {
                     getUserMedia();
                 } else {
                     console.log('Video is not available');
+                    // Try to get permissions again
+                    getPermissions().then(() => {
+                        if (videoAvailable) {
+                            getUserMedia();
+                        }
+                    });
                 }
             });
         }
@@ -551,8 +578,8 @@ export default function VideoMeetComponent() {
 
     let handleEndCall = () => {
         try {
-            let tracks = localVideoref.current.srcObject.getTracks()
-            tracks.forEach(track => track.stop())
+            let tracks = localVideoref.current?.srcObject?.getTracks()
+            tracks?.forEach(track => track.stop())
         } catch (e) { }
         window.location.href = "/"
     }
@@ -786,6 +813,8 @@ export default function VideoMeetComponent() {
                                         ref={(ref) => {
                                             if (ref && video.stream) {
                                                 ref.srcObject = video.stream;
+                                                // Ensure remote videos play
+                                                ref.play().catch(e => console.log('Error playing remote video:', e));
                                             }
                                         }}
                                         autoPlay
@@ -806,7 +835,7 @@ export default function VideoMeetComponent() {
                         </div>
                         
                         {/* Local video in corner - only show when video is enabled */}
-                        {video && videoAvailable && window.localStream && (
+                        {video && videoAvailable && (
                             <div style={{
                                 position: 'fixed',
                                 bottom: '120px',
@@ -831,6 +860,8 @@ export default function VideoMeetComponent() {
                                         background: '#000',
                                         objectFit: 'cover'
                                     }}
+                                    onPlay={() => console.log('Local video is playing')}
+                                    onError={(e) => console.log('Local video error:', e)}
                                 >
                                 </video>
                             </div>

@@ -1,35 +1,27 @@
+import React from 'react';
 import './App.css';
-import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
-import LandingPage from './pages/landing';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Home from './pages/home';
 import Authentication from './pages/authentication';
-import { AuthProvider } from './contexts/AuthContext';
-import VideoMeetComponent from './pages/VideoMeet';
-import HomeComponent from './pages/home';
 import History from './pages/history';
+import VideoMeet from './pages/VideoMeet';
+import Landing from './pages/landing';
 import MeetingNotes from './pages/MeetingNotes';
+import withAuth from './utils/withAuth';
 
 function App() {
   return (
     <div className="App">
-
       <Router>
-
-        <AuthProvider>
-
-
-          <Routes>
-
-            <Route path='/' element={<LandingPage />} />
-
-            <Route path='/auth' element={<Authentication />} />
-
-            <Route path='/home' element={<HomeComponent />} />
-            <Route path='/history' element={<History />} />
-            <Route path='/meeting-notes/:id' element={<MeetingNotes />} />
-            <Route path='/:meetingId' element={<VideoMeetComponent />} />
-          </Routes>
-        </AuthProvider>
-
+        <Routes>
+          <Route path="/" element={<Landing />} />
+          <Route path="/home" element={<Home />} />
+          <Route path="/auth" element={<Authentication />} />
+          <Route path="/history" element={withAuth(History)} />
+          <Route path="/meeting/:meetingId" element={withAuth(VideoMeet)} />
+          <Route path="/meeting" element={withAuth(VideoMeet)} />
+          <Route path="/meeting-notes" element={withAuth(MeetingNotes)} />
+        </Routes>
       </Router>
     </div>
   );
