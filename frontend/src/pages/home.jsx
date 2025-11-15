@@ -2,8 +2,7 @@ import React, { useContext, useState } from 'react'
 import withAuth from '../utils/withAuth'
 import { useNavigate } from 'react-router-dom'
 import "../App.css";
-import { Button, IconButton, TextField, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
-import RestoreIcon from '@mui/icons-material/Restore';
+import { Button, TextField, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import { AuthContext } from '../contexts/AuthContext';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
